@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from scipy.interpolate import interp1d
 import argparse
+from skimage import io
 
 def est_cdf(X):
     bins = np.arange(257)
@@ -54,14 +55,14 @@ def main():
             default=0.8
             )
     parser.add_argument("-s", "--source", required=True,
-    help="path to source image")
+    help="url to source image")
     parser.add_argument("-r", "--reference", required=True,
-    help="path to reference image")
+    help="url to reference image")
     
     args = parser.parse_args()
 
-    source = cv2.imread(args.source)
-    reference = cv2.imread(args.reference)
+    source = cv2.cvtColor(io.imread(args.source), cv2.COLOR_RGB2BGR)
+    reference = cv2.cvtColor(io.imread(args.reference), cv2.COLOR_RGB2BGR)
 
     result = transfer_using_colorspace(source, reference, strength = args.weight)
     cv2.imwrite('output.jpg', result)
